@@ -46,6 +46,7 @@ class _SerializedEnums {
   BillingResponse response;
   SkuType type;
   PurchaseStateWrapper purchaseState;
+  ProrationMode prorationMode;
 }
 
 /// Serializer for [PurchaseStateWrapper].
@@ -81,4 +82,20 @@ class PurchaseStateConverter
 
     throw ArgumentError('$object isn\'t mapped to PurchaseStatus');
   }
+}
+
+/// Serializer for [ProrationMode].
+///
+/// Use these in `@JsonSerializable()` classes by annotating them with
+/// `@ProrationModeConverter()`.
+class ProrationModeConverter implements JsonConverter<ProrationMode, int> {
+  /// Default const constructor.
+  const ProrationModeConverter();
+
+  @override
+  ProrationMode fromJson(int json) => _$enumDecode<ProrationMode>(
+      _$ProrationModeEnumMap.cast<ProrationMode, dynamic>(), json);
+
+  @override
+  int toJson(ProrationMode object) => _$ProrationModeEnumMap[object];
 }
