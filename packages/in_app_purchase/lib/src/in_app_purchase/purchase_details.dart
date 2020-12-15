@@ -87,15 +87,30 @@ enum PurchaseStatus {
 /// The parameter object for generating a purchase.
 class PurchaseParam {
   /// Creates a new purchase parameter object with the given data.
-  PurchaseParam(
-      {@required this.productDetails,
-      this.applicationUserName,
-      this.sandboxTesting});
+  PurchaseParam({
+    @required this.productDetails,
+    this.applicationUserName,
+    this.sandboxTesting,
+    this.oldProductDetails,
+    this.replaceProrationMode,
+  });
 
   /// The product to create payment for.
   ///
   /// It has to match one of the valid [ProductDetails] objects that you get from [ProductDetailsResponse] after calling [InAppPurchaseConnection.queryProductDetails].
   final ProductDetails productDetails;
+
+  /// Specifies the subscription that the user is upgrading or downgrading from.
+  ///
+  /// The 'oldProductDetails' is only available on Android.
+  /// Set it to not null for upgrading or downgrading subscription for current subscription. The default value is `null`.
+  final ProductDetails oldProductDetails;
+
+  /// Specifies the mode of proration during subscription upgrade/downgrade.
+  ///
+  /// The 'replaceProrationMode' is only available on Android.
+  /// This value will only be effective if the [oldProductDetails] is also set.
+  final ProrationMode replaceProrationMode;
 
   /// An opaque id for the user's account that's unique to your app. (Optional)
   ///
@@ -138,6 +153,7 @@ class PurchaseDetails {
 
   /// The status that this [PurchaseDetails] is currently on.
   PurchaseStatus get status => _status;
+
   set status(PurchaseStatus status) {
     if (_platform == _kPlatformIOS) {
       if (status == PurchaseStatus.purchased ||
