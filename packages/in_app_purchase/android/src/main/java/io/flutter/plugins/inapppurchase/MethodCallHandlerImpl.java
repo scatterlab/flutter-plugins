@@ -120,7 +120,10 @@ class MethodCallHandlerImpl
         break;
       case InAppPurchasePlugin.MethodNames.LAUNCH_BILLING_FLOW:
         launchBillingFlow(
-            (String) call.argument("sku"), (String) call.argument("accountId"), result);
+            (String) call.argument("sku"),
+            (String) call.argument("accountId"),
+            (String) call.argument("oldSku"),
+            (Integer) call.argument("replaceSkusProrationMode"), result);
         break;
       case InAppPurchasePlugin.MethodNames.QUERY_PURCHASES:
         queryPurchases((String) call.argument("skuType"), result);
@@ -189,7 +192,11 @@ class MethodCallHandlerImpl
   }
 
   private void launchBillingFlow(
-      String sku, @Nullable String accountId, MethodChannel.Result result) {
+      String sku,
+      @Nullable String accountId,
+      @Nullable String oldSku,
+      @Nullable Integer replaceSkusProrationMode,
+      MethodChannel.Result result) {
     if (billingClientError(result)) {
       return;
     }
@@ -214,10 +221,19 @@ class MethodCallHandlerImpl
     }
 
     BillingFlowParams.Builder paramsBuilder =
-        BillingFlowParams.newBuilder().setSkuDetails(skuDetails);
+        BillingFlowParams.newBuilder();
     if (accountId != null && !accountId.isEmpty()) {
       paramsBuilder.setAccountId(accountId);
     }
+    if (oldSku != null && replaceSkusProrationMode != null) {
+      paramsBuilder
+        .setOldSku(oldSku)
+        .setReplaceSkusProrationMode(replaceSkusProrationMode)
+        .setSkuDetails(skuDetails);
+    } else {
+      paramsBuilder.setSkuDetails(skuDetails);
+    }
+
     result.success(
         Translator.fromBillingResult(
             billingClient.launchBillingFlow(activity, paramsBuilder.build())));
