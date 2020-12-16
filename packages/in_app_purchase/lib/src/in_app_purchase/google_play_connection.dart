@@ -62,7 +62,7 @@ class GooglePlayConnection
         await billingClient.launchBillingFlow(
             sku: purchaseParam.productDetails.id,
             accountId: purchaseParam.applicationUserName,
-            oldSku: purchaseParam.oldProductDetails.id,
+            oldSku: purchaseParam.oldSku,
             replaceSkusProrationMode: purchaseParam.replaceProrationMode);
     return billingResultWrapper.responseCode == BillingResponse.ok;
   }

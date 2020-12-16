@@ -91,7 +91,7 @@ class PurchaseParam {
     @required this.productDetails,
     this.applicationUserName,
     this.sandboxTesting,
-    this.oldProductDetails,
+    this.oldSku,
     this.replaceProrationMode,
   });
 
@@ -104,7 +104,7 @@ class PurchaseParam {
   ///
   /// The 'oldProductDetails' is only available on Android.
   /// Set it to not null for upgrading or downgrading subscription for current subscription. The default value is `null`.
-  final ProductDetails oldProductDetails;
+  final String oldSku;
 
   /// Specifies the mode of proration during subscription upgrade/downgrade.
   ///
