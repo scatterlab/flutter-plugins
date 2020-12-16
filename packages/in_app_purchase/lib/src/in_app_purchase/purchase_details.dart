@@ -100,16 +100,16 @@ class PurchaseParam {
   /// It has to match one of the valid [ProductDetails] objects that you get from [ProductDetailsResponse] after calling [InAppPurchaseConnection.queryProductDetails].
   final ProductDetails productDetails;
 
-  /// Specifies the subscription that the user is upgrading or downgrading from.
+  /// Specifies the subscription sku id that the user is upgrading or downgrading from.
   ///
-  /// The 'oldProductDetails' is only available on Android.
+  /// The 'oldSku' is only available on Android.
   /// Set it to not null for upgrading or downgrading subscription for current subscription. The default value is `null`.
   final String oldSku;
 
   /// Specifies the mode of proration during subscription upgrade/downgrade.
   ///
   /// The 'replaceProrationMode' is only available on Android.
-  /// This value will only be effective if the [oldProductDetails] is also set.
+  /// This value will only be effective if the [oldSku] is also set.
   final ProrationMode replaceProrationMode;
 
   /// An opaque id for the user's account that's unique to your app. (Optional)
