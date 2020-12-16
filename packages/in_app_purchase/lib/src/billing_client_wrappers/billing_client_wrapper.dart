@@ -156,6 +156,9 @@ class BillingClient {
   /// Do not pass in a cleartext [accountId], use your developer ID, or use the
   /// user's Google ID for this field.
   ///
+  /// The [oldSku] is specifies the SKU that the user is upgrading or downgrading from.
+  /// If allow users to upgrade, downgrade, or change their subscription, [oldSku] value must not be null.
+  ///
   /// The [replaceSkusProrationMode] is specifies the mode of proration during subscription upgrade/downgrade.
   /// If allow users to upgrade, downgrade, or change their subscription, [replaceSkusProrationMode] value must not be null.
   ///
@@ -178,8 +181,8 @@ class BillingClient {
   /// replaceSkusProrationMode](https://developer.android.com/reference/com/android/billingclient/api/BillingFlowParams.Builder#setReplaceSkusProrationMode(int)).
   Future<BillingResultWrapper> launchBillingFlow(
       {@required String sku,
-      String accountId,
       String oldSku,
+      String accountId,
       ProrationMode replaceSkusProrationMode}) async {
     assert(sku != null);
     final Map<String, dynamic> arguments = <String, dynamic>{
