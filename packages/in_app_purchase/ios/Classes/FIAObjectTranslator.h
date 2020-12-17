@@ -28,6 +28,9 @@ NS_ASSUME_NONNULL_BEGIN
 + (SKPaymentDiscount *)getSKPaymentDiscountFromMap:(NSDictionary *)map
     API_AVAILABLE(ios(12.2));
 
++ (NSDictionary *)getMapFromSKPaymentDiscount:(SKPaymentDiscount *)paymentDiscount
+    API_AVAILABLE(ios(12.2));
+
 + (NSDictionary *)getMapFromSKPaymentTransaction:(SKPaymentTransaction *)transaction;
 
 + (NSDictionary *)getMapFromNSError:(NSError *)error;
