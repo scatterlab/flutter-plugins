@@ -251,6 +251,85 @@ class SKError {
 }
 
 /// Dart wrapper around StoreKit's
+/// [SKPaymentDiscount](https://developer.apple.com/documentation/storekit/skpaymentdiscount?language=objc).
+///
+/// Used to apply [Promotion Offer](https://developer.apple.com/app-store/subscriptions/#promotional-offers)
+/// from iOS 12.2 and later.
+///
+/// See [Setting Up Promotional Offers](https://developer.apple.com/documentation/storekit/in-app_purchase/subscriptions_and_offers/setting_up_promotional_offers?language=objc)
+@JsonSerializable(nullable: true)
+class SKPaymentDiscountWrapper {
+  /// Creates a new [SKPaymentDiscountWrapper] with the provided information.
+  SKPaymentDiscountWrapper(
+      {@required this.identifier,
+      @required this.keyIdentifier,
+      @required this.nonce,
+      @required this.signature,
+      @required this.timestamp});
+
+  /// Constructs an instance of this from a key value map of data.
+  ///
+  /// The map needs to have named string keys with values matching the names and
+  /// types of all of the members on this class. The `map` parameter must not be
+  /// null.
+  factory SKPaymentDiscountWrapper.fromJson(Map map) {
+    return _$SKPaymentDiscountWrapperFromJson(map);
+  }
+
+  /// Creates a Map object describes the object.
+  Map<String, dynamic> toMap() {
+    return {
+      'identifier': identifier,
+      'keyIdentifier': keyIdentifier,
+      'nonce': nonce,
+      'signature': signature,
+      'timestamp': timestamp,
+    };
+  }
+
+  /// The id for the promotion offer discount
+  final String identifier;
+
+  /// The id to identify private key used when created the [signature]
+  final String keyIdentifier;
+
+  /// The unique id generated from server when created the [signature].
+  final String nonce;
+
+  /// The unique string for the App Store to validate the promotion offer.
+  ///
+  /// See [Generating a Signature for Promotional Offers](https://developer.apple.com/documentation/storekit/in-app_purchase/subscriptions_and_offers/generating_a_signature_for_promotional_offers?language=objc)
+  /// and [Create a Signature](https://developer.apple.com/documentation/storekit/in-app_purchase/subscriptions_and_offers/implementing_promotional_offers_in_your_app?language=objc#3150981)
+  final String signature;
+
+  /// The time when [signature] is created. UNIX epoch time formatted milliseconds.
+  final int timestamp;
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(other, this)) {
+      return true;
+    }
+    if (other.runtimeType != runtimeType) {
+      return false;
+    }
+    final SKPaymentDiscountWrapper typedOther = other;
+    return typedOther.identifier == identifier &&
+        typedOther.keyIdentifier == keyIdentifier &&
+        typedOther.nonce == nonce &&
+        typedOther.timestamp == timestamp &&
+        typedOther.signature == signature;
+  }
+
+  @override
+  int get hashCode => hashValues(this.identifier, this.keyIdentifier,
+      this.nonce, this.timestamp, this.signature);
+
+  @override
+  String toString() => _$SKPaymentDiscountWrapperToJson(this).toString();
+}
+
+/// Dart wrapper around StoreKit's
 /// [SKPayment](https://developer.apple.com/documentation/storekit/skpayment?language=objc).
 ///
 /// Used as the parameter to initiate a payment. In general, a developer should
@@ -265,6 +344,7 @@ class SKPaymentWrapper {
       this.applicationUsername,
       this.requestData,
       this.quantity = 1,
+      this.paymentDiscount,
       this.simulatesAskToBuyInSandbox = false});
 
   /// Constructs an instance of this from a key value map of data.
@@ -284,7 +364,8 @@ class SKPaymentWrapper {
       'applicationUsername': applicationUsername,
       'requestData': requestData,
       'quantity': quantity,
-      'simulatesAskToBuyInSandbox': simulatesAskToBuyInSandbox
+      'simulatesAskToBuyInSandbox': simulatesAskToBuyInSandbox,
+      'paymentDiscount': paymentDiscount?.toMap()
     };
   }
 
@@ -324,6 +405,13 @@ class SKPaymentWrapper {
   /// testing.
   final bool simulatesAskToBuyInSandbox;
 
+  /// The details of a promotional offer discount that you want to apply to the payment.
+  ///
+  /// See [paymentDiscount](https://developer.apple.com/documentation/storekit/skpayment/3043526-paymentdiscount?language=objc))
+  /// and [SKPaymentDiscount](https://developer.apple.com/documentation/storekit/skpaymentdiscount?language=objc)
+  /// for more details.
+  final SKPaymentDiscountWrapper paymentDiscount;
+
   @override
   bool operator ==(Object other) {
     if (identical(other, this)) {
@@ -337,6 +425,7 @@ class SKPaymentWrapper {
         typedOther.applicationUsername == applicationUsername &&
         typedOther.quantity == quantity &&
         typedOther.simulatesAskToBuyInSandbox == simulatesAskToBuyInSandbox &&
+        typedOther.paymentDiscount == paymentDiscount &&
         typedOther.requestData == requestData;
   }
 
@@ -346,6 +435,7 @@ class SKPaymentWrapper {
       this.applicationUsername,
       this.quantity,
       this.simulatesAskToBuyInSandbox,
+      this.paymentDiscount,
       this.requestData);
 
   @override

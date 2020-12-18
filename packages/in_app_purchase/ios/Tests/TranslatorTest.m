@@ -14,6 +14,7 @@
 @property(strong, nonatomic) NSMutableDictionary *productMap;
 @property(strong, nonatomic) NSDictionary *productResponseMap;
 @property(strong, nonatomic) NSDictionary *paymentMap;
+@property(strong, nonatomic) NSDictionary *paymentDiscountMap;
 @property(strong, nonatomic) NSDictionary *transactionMap;
 @property(strong, nonatomic) NSDictionary *errorMap;
 @property(strong, nonatomic) NSDictionary *localeMap;
@@ -50,6 +51,14 @@
 
   self.productResponseMap =
       @{@"products" : @[ self.productMap ], @"invalidProductIdentifiers" : @[]};
+
+  self.paymentDiscountMap = @{
+      @"identifier": @"123",
+      @"keyIdentifier": @"456",
+      @"nonce": @"00000000-0000-0000-0000-000000000000",
+      @"timestamp": @1234,
+      @"signature": @"123abcdefghabcdefghabcdefghabcdefghabcdefghabcdefghabcdefghabcdefgh456",
+  };
   self.paymentMap = @{
     @"productIdentifier" : @"123",
     @"requestData" : @"abcdefghabcdefghabcdefghabcdefghabcdefghabcdefghabcdefghabcdefgh",
@@ -57,6 +66,9 @@
     @"applicationUsername" : @"app user name",
     @"simulatesAskToBuyInSandbox" : @(NO)
   };
+  if (@available(iOS 12.2, *)) {
+    self.paymentMap[@"paymentDiscount"] = self.paymentDiscountMap;
+  }
   NSDictionary *originalTransactionMap = @{
     @"transactionIdentifier" : @"567",
     @"transactionState" : @(SKPaymentTransactionStatePurchasing),
@@ -120,6 +132,14 @@
   SKMutablePayment *payment = [FIAObjectTranslator getSKMutablePaymentFromMap:self.paymentMap];
   NSDictionary *map = [FIAObjectTranslator getMapFromSKPayment:payment];
   XCTAssertEqualObjects(map, self.paymentMap);
+}
+
+- (void)testPaymentDiscountToMap {
+  if (@available(iOS 12.2, *)) {
+    SKPaymentDiscount *paymentDiscount = [FIAObjectTranslator getSKPaymentDiscountFromMap:self.paymentDiscountMap];
+    NSDictionary *map = [FIAObjectTranslator getMapFromSKPaymentDiscount:paymentDiscount];
+    XCTAssertEqualObjects(map, self.paymentDiscountMap);
+  }
 }
 
 - (void)testPaymentTransactionToMap {

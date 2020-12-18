@@ -185,6 +185,10 @@
                                              : [simulatesAskToBuyInSandbox boolValue];
   }
 
+  if (@available(iOS 12.2, *)) {
+      payment.paymentDiscount = [FIAObjectTranslator getSKPaymentDiscountFromMap:paymentMap[@"paymentDiscount"]];
+  }
+
   if (![self.paymentQueueHandler addPayment:payment]) {
     result([FlutterError
         errorWithCode:@"storekit_duplicate_product_object"

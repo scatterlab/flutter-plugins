@@ -127,7 +127,29 @@
   if (@available(iOS 8.3, *)) {
     payment.simulatesAskToBuyInSandbox = [map[@"simulatesAskToBuyInSandbox"] boolValue];
   }
+
+  if (@available(iOS 12.2, *)) {
+    payment.paymentDiscount = [FIAObjectTranslator getSKPaymentDiscountFromMap:map[@"paymentDiscount"]];
+  }
   return payment;
+}
+
++ (SKPaymentDiscount *) getSKPaymentDiscountFromMap:(NSDictionary *)map  API_AVAILABLE(ios(12.2)){
+    if(!map) {
+        return nil;
+    }
+    
+    
+    SKPaymentDiscount *paymentDiscount = [
+                                          [SKPaymentDiscount alloc]
+                                          initWithIdentifier:map[@"identifier"]
+                                          keyIdentifier:map[@"keyIdentifier"]
+                                          nonce:[[NSUUID alloc] initWithUUIDString:map[@"nonce"]]
+                                          signature:map[@"signature"]
+                                          timestamp:@([map[@"timestamp"] integerValue])
+                                          ];
+
+    return paymentDiscount;
 }
 
 + (NSDictionary *)getMapFromSKPaymentTransaction:(SKPaymentTransaction *)transaction {
@@ -148,6 +170,20 @@
     @"transactionState" : @(transaction.transactionState)
   }];
 
+  return map;
+}
+
++ (NSDictionary *)getMapFromSKPaymentDiscount:(SKPaymentDiscount *)paymentDiscount  API_AVAILABLE(ios(12.2)){
+  if (!paymentDiscount) {
+    return nil;
+  }
+  NSMutableDictionary *map = [[NSMutableDictionary alloc] initWithDictionary:@{
+    @"identifier" : paymentDiscount.identifier,
+    @"keyIdentifier" : paymentDiscount.keyIdentifier,
+    @"nonce" : paymentDiscount.nonce.UUIDString,
+    @"signature" : paymentDiscount.signature,
+    @"timestamp" : paymentDiscount.timestamp,
+  }];
   return map;
 }
 

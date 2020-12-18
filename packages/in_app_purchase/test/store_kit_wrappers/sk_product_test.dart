@@ -115,6 +115,11 @@ void main() {
       expect(payment, equals(dummyPayment));
     });
 
+    test('Should construct correct SKPaymentDiscountWrapper from json', () {
+      SKPaymentDiscountWrapper paymentDiscount = SKPaymentDiscountWrapper.fromJson(dummyPaymentDiscount.toMap());
+      expect(paymentDiscount, equals(dummyPaymentDiscount));
+    });
+
     test('Should construct correct SKError from json', () {
       SKError error = SKError.fromJson(buildErrorMap(dummyError));
       expect(error, equals(dummyError));
@@ -152,6 +157,10 @@ void main() {
 
       expect(map['simulatesAskToBuyInSandbox'],
           dummyPayment.simulatesAskToBuyInSandbox);
+
+      expect(map['paymentDiscount'],
+          dummyPayment.paymentDiscount.toMap());
     });
+
   });
 }

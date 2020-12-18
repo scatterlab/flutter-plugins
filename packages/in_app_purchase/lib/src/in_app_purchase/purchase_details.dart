@@ -7,6 +7,7 @@ import 'package:in_app_purchase/src/billing_client_wrappers/enum_converters.dart
 import 'package:in_app_purchase/src/billing_client_wrappers/purchase_wrapper.dart';
 import 'package:in_app_purchase/src/store_kit_wrappers/enum_converters.dart';
 import 'package:in_app_purchase/src/store_kit_wrappers/sk_payment_transaction_wrappers.dart';
+import 'package:in_app_purchase/src/store_kit_wrappers/sk_payment_queue_wrapper.dart';
 import './in_app_purchase_connection.dart';
 import './product_details.dart';
 
@@ -87,14 +88,13 @@ enum PurchaseStatus {
 /// The parameter object for generating a purchase.
 class PurchaseParam {
   /// Creates a new purchase parameter object with the given data.
-  PurchaseParam({
-    @required this.productDetails,
-    this.applicationUserName,
-    this.sandboxTesting,
-    this.oldSku,
-    this.replaceProrationMode,
-  });
-
+  PurchaseParam(
+      {@required this.productDetails,
+      this.applicationUserName,
+      this.paymentDiscount,
+      this.oldSku,
+      this.replaceProrationMode,
+      this.sandboxTesting});
   /// The product to create payment for.
   ///
   /// It has to match one of the valid [ProductDetails] objects that you get from [ProductDetailsResponse] after calling [InAppPurchaseConnection.queryProductDetails].
@@ -128,6 +128,9 @@ class PurchaseParam {
 
   /// The 'sandboxTesting' is only available on iOS, set it to `true` for testing in AppStore's sandbox environment. The default value is `false`.
   final bool sandboxTesting;
+
+  /// The 'paymentDiscount' is only available on iOS. Used to apply Promotion Offer on App Store. (Optional)
+  final SKPaymentDiscountWrapper paymentDiscount;
 }
 
 /// Represents the transaction details of a purchase.

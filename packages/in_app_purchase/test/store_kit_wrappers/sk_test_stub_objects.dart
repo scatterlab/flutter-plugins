@@ -9,9 +9,16 @@ final dummyPayment = SKPaymentWrapper(
     applicationUsername: 'app-user-name',
     requestData: 'fake-data-utf8',
     quantity: 2,
+    paymentDiscount: dummyPaymentDiscount,
     simulatesAskToBuyInSandbox: true);
 final SKError dummyError =
     SKError(code: 111, domain: 'dummy-domain', userInfo: {'key': 'value'});
+final SKPaymentDiscountWrapper dummyPaymentDiscount = SKPaymentDiscountWrapper(
+    identifier: 'prod-id',
+    keyIdentifier: 'fake-key',
+    nonce: 'fake-uuid',
+    signature: 'fake-data-utf8',
+    timestamp: 1234);
 
 final SKPaymentTransactionWrapper dummyOriginalTransaction =
     SKPaymentTransactionWrapper(
