@@ -150,15 +150,22 @@ void main() {
       );
       final SkuDetailsWrapper skuDetails = dummySkuDetails;
       final String accountId = "hashedAccountId";
+      final String oldSku = "oldSku";
+      final ProrationMode replaceSkusProrationMode = ProrationMode.deferred;
 
       expect(
           await billingClient.launchBillingFlow(
-              sku: skuDetails.sku, accountId: accountId),
+              sku: skuDetails.sku,
+              accountId: accountId,
+              oldSku: oldSku,
+              replaceSkusProrationMode: replaceSkusProrationMode),
           equals(expectedBillingResult));
       Map<dynamic, dynamic> arguments =
           stubPlatform.previousCallMatching(launchMethodName).arguments;
       expect(arguments['sku'], equals(skuDetails.sku));
       expect(arguments['accountId'], equals(accountId));
+      expect(arguments['oldSku'], equals(oldSku));
+      expect(arguments['replaceSkusProrationMode'], equals(4));
     });
 
     test('handles null accountId', () async {
@@ -171,13 +178,46 @@ void main() {
         value: buildBillingResultMap(expectedBillingResult),
       );
       final SkuDetailsWrapper skuDetails = dummySkuDetails;
+      final String oldSku = "oldSku";
+      final ProrationMode replaceSkusProrationMode = ProrationMode.deferred;
 
-      expect(await billingClient.launchBillingFlow(sku: skuDetails.sku),
+      expect(
+          await billingClient.launchBillingFlow(
+              sku: skuDetails.sku,
+              oldSku: oldSku,
+              replaceSkusProrationMode: replaceSkusProrationMode),
           equals(expectedBillingResult));
       Map<dynamic, dynamic> arguments =
           stubPlatform.previousCallMatching(launchMethodName).arguments;
       expect(arguments['sku'], equals(skuDetails.sku));
       expect(arguments['accountId'], isNull);
+      expect(arguments['oldSku'], equals(oldSku));
+      expect(arguments['replaceSkusProrationMode'], equals(4));
+    });
+
+    test('handles null oldSku, replaceSkusProrationMode', () async {
+      const String debugMessage = 'dummy message';
+      final BillingResponse responseCode = BillingResponse.ok;
+      final BillingResultWrapper expectedBillingResult = BillingResultWrapper(
+          responseCode: responseCode, debugMessage: debugMessage);
+      stubPlatform.addResponse(
+        name: launchMethodName,
+        value: buildBillingResultMap(expectedBillingResult),
+      );
+      final SkuDetailsWrapper skuDetails = dummySkuDetails;
+      final String accountId = "hashedAccountId";
+
+      expect(
+          await billingClient.launchBillingFlow(
+              sku: skuDetails.sku,
+              accountId: accountId),
+          equals(expectedBillingResult));
+      Map<dynamic, dynamic> arguments =
+          stubPlatform.previousCallMatching(launchMethodName).arguments;
+      expect(arguments['sku'], equals(skuDetails.sku));
+      expect(arguments['accountId'], equals(accountId));
+      expect(arguments['oldSku'], isNull);
+      expect(arguments['replaceSkusProrationMode'], isNull);
     });
   });
 

@@ -92,12 +92,31 @@ class PurchaseParam {
       {@required this.productDetails,
       this.applicationUserName,
       this.paymentDiscount,
+      this.oldSku,
+      this.replaceProrationMode,
       this.sandboxTesting});
-
   /// The product to create payment for.
   ///
   /// It has to match one of the valid [ProductDetails] objects that you get from [ProductDetailsResponse] after calling [InAppPurchaseConnection.queryProductDetails].
   final ProductDetails productDetails;
+
+  /// Specifies the subscription sku id that the user is upgrading or downgrading from.
+  ///
+  /// The 'oldSku' is only available on Android.
+  /// Set it to not null for upgrading or downgrading subscription for current subscription. The default value is `null`.
+  ///
+  /// In iOS, this property is not used.
+  /// If you set up [productDetails] as you want to change, it will proceed automatically.
+  final String oldSku;
+
+  /// Specifies the mode of proration during subscription upgrade/downgrade.
+  ///
+  /// The 'replaceProrationMode' is only available on Android.
+  /// This value will only be effective if the [oldSku] is also set.
+  ///
+  /// In iOS, this property is not used.
+  /// If you set up [productDetails] as you want to change, it will proceed automatically.
+  final ProrationMode replaceProrationMode;
 
   /// An opaque id for the user's account that's unique to your app. (Optional)
   ///
@@ -143,6 +162,7 @@ class PurchaseDetails {
 
   /// The status that this [PurchaseDetails] is currently on.
   PurchaseStatus get status => _status;
+
   set status(PurchaseStatus status) {
     if (_platform == _kPlatformIOS) {
       if (status == PurchaseStatus.purchased ||
