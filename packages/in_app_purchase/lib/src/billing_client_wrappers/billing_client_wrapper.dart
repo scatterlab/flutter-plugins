@@ -156,6 +156,12 @@ class BillingClient {
   /// Do not pass in a cleartext [accountId], use your developer ID, or use the
   /// user's Google ID for this field.
   ///
+  /// The [oldSku] is specifies the SKU that the user is upgrading or downgrading from.
+  /// If allow users to upgrade, downgrade, or change their subscription, [oldSku] value must not be null.
+  ///
+  /// The [replaceSkusProrationMode] is specifies the mode of proration during subscription upgrade/downgrade.
+  /// If allow users to upgrade, downgrade, or change their subscription, [replaceSkusProrationMode] value must not be null.
+  ///
   /// Calling this attemps to show the Google Play purchase UI. The user is free
   /// to complete the transaction there.
   ///
@@ -169,14 +175,22 @@ class BillingClient {
   /// [`BillingFlowParams`](https://developer.android.com/reference/com/android/billingclient/api/BillingFlowParams)
   /// instance by [setting the given
   /// skuDetails](https://developer.android.com/reference/com/android/billingclient/api/BillingFlowParams.Builder.html#setskudetails)
-  /// and [the given
-  /// accountId](https://developer.android.com/reference/com/android/billingclient/api/BillingFlowParams.Builder.html#setAccountId(java.lang.String)).
+  /// , [the given
+  /// accountId](https://developer.android.com/reference/com/android/billingclient/api/BillingFlowParams.Builder.html#setAccountId(java.lang.String))
+  /// , [the given
+  /// replaceSkusProrationMode](https://developer.android.com/reference/com/android/billingclient/api/BillingFlowParams.Builder#setReplaceSkusProrationMode(int)).
   Future<BillingResultWrapper> launchBillingFlow(
-      {@required String sku, String accountId}) async {
+      {@required String sku,
+      String oldSku,
+      String accountId,
+      ProrationMode replaceSkusProrationMode}) async {
     assert(sku != null);
     final Map<String, dynamic> arguments = <String, dynamic>{
       'sku': sku,
       'accountId': accountId,
+      'oldSku': oldSku,
+      'replaceSkusProrationMode':
+          ProrationModeConverter().toJson(replaceSkusProrationMode),
     };
     return BillingResultWrapper.fromJson(
         await channel.invokeMapMethod<String, dynamic>(
@@ -311,9 +325,9 @@ typedef void OnBillingServiceDisconnected();
 /// See the `BillingResponse` docs for more explanation of the different
 /// constants.
 enum BillingResponse {
-  // WARNING: Changes to this class need to be reflected in our generated code.
-  // Run `flutter packages pub run build_runner watch` to rebuild and watch for
-  // further changes.
+// WARNING: Changes to this class need to be reflected in our generated code.
+// Run `flutter packages pub run build_runner watch` to rebuild and watch for
+// further changes.
   /// The requested feature is not supported by Play Store on the current device.
   @JsonValue(-2)
   featureNotSupported,
@@ -365,9 +379,9 @@ enum BillingResponse {
 /// [`BillingClient.SkuType`](https://developer.android.com/reference/com/android/billingclient/api/BillingClient.SkuType)
 /// See the linked documentation for an explanation of the different constants.
 enum SkuType {
-  // WARNING: Changes to this class need to be reflected in our generated code.
-  // Run `flutter packages pub run build_runner watch` to rebuild and watch for
-  // further changes.
+// WARNING: Changes to this class need to be reflected in our generated code.
+// Run `flutter packages pub run build_runner watch` to rebuild and watch for
+// further changes.
 
   /// A one time product. Acquired in a single transaction.
   @JsonValue('inapp')
@@ -376,4 +390,40 @@ enum SkuType {
   /// A product requiring a recurring charge over time.
   @JsonValue('subs')
   subs,
+}
+
+/// Replace SKU ProrationMode.
+///
+/// Wraps
+/// [`BillingFlowParams.ProrationMode`](https://developer.android.com/reference/com/android/billingclient/api/BillingFlowParams.ProrationMode)
+/// See the linked documentation for an explanation of the different constants.
+enum ProrationMode {
+// WARNING: Changes to this class need to be reflected in our generated code.
+// Run `flutter packages pub run build_runner watch` to rebuild and watch for
+// further changes.
+
+  /// Unknown subscription upgrade or downgrade policy.
+  @JsonValue(0)
+  unknownSubscriptionUpgradeDowngradePolicy,
+
+  /// Replacement takes effect immediately, and the remaining time will be prorated and credited to the user.
+  /// This is the current default behavior.
+  @JsonValue(1)
+  immediateWithTimeProration,
+
+  /// Replacement takes effect immediately, and the billing cycle remains the same.
+  /// The price for the remaining period will be charged.
+  /// This option is only available for subscription upgrade.
+  @JsonValue(2)
+  immediateAndChargeProratedPrice,
+
+  /// Replacement takes effect immediately, and the new price will be charged on next recurrence time.
+  /// The billing cycle stays the same.
+  @JsonValue(3)
+  immediateWithoutProration,
+
+  /// Replacement takes effect when the old plan expires,
+  /// and the new price will be charged at the same time.
+  @JsonValue(4)
+  deferred
 }
