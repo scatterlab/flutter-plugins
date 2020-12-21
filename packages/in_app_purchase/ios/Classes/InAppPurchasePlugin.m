@@ -186,7 +186,11 @@
   }
 
   if (@available(iOS 12.2, *)) {
-      payment.paymentDiscount = [FIAObjectTranslator getSKPaymentDiscountFromMap:paymentMap[@"paymentDiscount"]];
+      NSDictionary *paymentDiscount = [paymentMap objectForKey:@"paymentDiscount"];
+      
+      if (paymentDiscount != (id)[NSNull null]) {
+          payment.paymentDiscount = [FIAObjectTranslator getSKPaymentDiscountFromMap:paymentDiscount];
+      }
   }
 
   if (![self.paymentQueueHandler addPayment:payment]) {
