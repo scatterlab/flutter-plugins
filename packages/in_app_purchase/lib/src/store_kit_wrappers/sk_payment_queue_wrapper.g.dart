@@ -57,10 +57,10 @@ SKPaymentWrapper _$SKPaymentWrapperFromJson(Map json) {
 
 Map<String, dynamic> _$SKPaymentWrapperToJson(SKPaymentWrapper instance) =>
     <String, dynamic>{
-      'paymentDiscount': instance.paymentDiscount,
       'productIdentifier': instance.productIdentifier,
       'applicationUsername': instance.applicationUsername,
       'requestData': instance.requestData,
       'quantity': instance.quantity,
       'simulatesAskToBuyInSandbox': instance.simulatesAskToBuyInSandbox,
+      'paymentDiscount': instance.paymentDiscount,
     };
