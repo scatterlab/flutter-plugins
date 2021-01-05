@@ -182,7 +182,7 @@ class BillingClient {
   Future<BillingResultWrapper> launchBillingFlow(
       {@required String sku,
       String oldSku,
-      String purchaseToken,
+      String oldPurchaseToken,
       String accountId,
       ProrationMode replaceSkusProrationMode}) async {
     assert(sku != null);
@@ -190,7 +190,7 @@ class BillingClient {
       'sku': sku,
       'accountId': accountId,
       'oldSku': oldSku,
-      'purchaseToken': purchaseToken,
+      'oldPurchaseToken': oldPurchaseToken,
       'replaceSkusProrationMode':
           ProrationModeConverter().toJson(replaceSkusProrationMode),
     };

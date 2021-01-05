@@ -63,7 +63,7 @@ class GooglePlayConnection
             sku: purchaseParam.productDetails.id,
             accountId: purchaseParam.applicationUserName,
             oldSku: purchaseParam.oldSku,
-            purchaseToken: purchaseParam.purchaseToken,
+            oldPurchaseToken: purchaseParam.oldPurchaseToken,
             replaceSkusProrationMode: purchaseParam.replaceProrationMode);
     return billingResultWrapper.responseCode == BillingResponse.ok;
   }

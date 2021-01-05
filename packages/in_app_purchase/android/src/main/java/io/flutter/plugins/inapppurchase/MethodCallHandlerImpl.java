@@ -123,7 +123,7 @@ class MethodCallHandlerImpl
             (String) call.argument("sku"),
             (String) call.argument("accountId"),
             (String) call.argument("oldSku"),
-            (String) call.argument("purchaseToken"),
+            (String) call.argument("oldPurchaseToken"),
             (Integer) call.argument("replaceSkusProrationMode"), result);
         break;
       case InAppPurchasePlugin.MethodNames.QUERY_PURCHASES:
