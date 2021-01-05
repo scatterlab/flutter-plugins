@@ -60,7 +60,7 @@ class SkuDetailsWrapper {
   final String introductoryPriceMicros;
 
   /// The number of billing perios that [introductoryPrice] is valid for ("2").
-  final String introductoryPriceCycles;
+  final int introductoryPriceCycles;
 
   /// The billing period of [introductoryPrice], in ISO 8601 format.
   final String introductoryPricePeriod;
