@@ -35,7 +35,6 @@ class SkuDetailsWrapper {
     @required this.subscriptionPeriod,
     @required this.title,
     @required this.type,
-    @required this.isRewarded,
     @required this.originalPrice,
     @required this.originalPriceAmountMicros,
   });
@@ -87,9 +86,6 @@ class SkuDetailsWrapper {
   /// The [SkuType] of the product.
   final SkuType type;
 
-  /// False if the product is paid.
-  final bool isRewarded;
-
   /// The original price that the user purchased this product for.
   final String originalPrice;
 
@@ -116,7 +112,6 @@ class SkuDetailsWrapper {
         typedOther.subscriptionPeriod == subscriptionPeriod &&
         typedOther.title == title &&
         typedOther.type == type &&
-        typedOther.isRewarded == isRewarded &&
         typedOther.originalPrice == originalPrice &&
         typedOther.originalPriceAmountMicros == originalPriceAmountMicros;
   }
@@ -136,7 +131,6 @@ class SkuDetailsWrapper {
         subscriptionPeriod.hashCode,
         title.hashCode,
         type.hashCode,
-        isRewarded.hashCode,
         originalPrice,
         originalPriceAmountMicros);
   }

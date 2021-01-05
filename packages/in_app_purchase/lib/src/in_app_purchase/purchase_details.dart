@@ -94,6 +94,7 @@ class PurchaseParam {
       this.paymentDiscount,
       this.oldSku,
       this.replaceProrationMode,
+      this.oldPurchaseToken,
       this.sandboxTesting});
   /// The product to create payment for.
   ///
@@ -117,6 +118,8 @@ class PurchaseParam {
   /// In iOS, this property is not used.
   /// If you set up [productDetails] as you want to change, it will proceed automatically.
   final ProrationMode replaceProrationMode;
+
+  final String oldPurchaseToken;
 
   /// An opaque id for the user's account that's unique to your app. (Optional)
   ///

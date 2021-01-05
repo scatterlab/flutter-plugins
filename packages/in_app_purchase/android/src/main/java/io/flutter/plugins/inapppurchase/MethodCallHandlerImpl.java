@@ -123,6 +123,7 @@ class MethodCallHandlerImpl
             (String) call.argument("sku"),
             (String) call.argument("accountId"),
             (String) call.argument("oldSku"),
+            (String) call.argument("oldPurchaseToken"),
             (Integer) call.argument("replaceSkusProrationMode"), result);
         break;
       case InAppPurchasePlugin.MethodNames.QUERY_PURCHASES:
@@ -134,7 +135,6 @@ class MethodCallHandlerImpl
       case InAppPurchasePlugin.MethodNames.CONSUME_PURCHASE_ASYNC:
         consumeAsync(
             (String) call.argument("purchaseToken"),
-            (String) call.argument("developerPayload"),
             result);
         break;
       case InAppPurchasePlugin.MethodNames.ACKNOWLEDGE_PURCHASE:
@@ -195,6 +195,7 @@ class MethodCallHandlerImpl
       String sku,
       @Nullable String accountId,
       @Nullable String oldSku,
+      @Nullable String oldPurchaseToken,
       @Nullable Integer replaceSkusProrationMode,
       MethodChannel.Result result) {
     if (billingClientError(result)) {
@@ -223,11 +224,11 @@ class MethodCallHandlerImpl
     BillingFlowParams.Builder paramsBuilder =
         BillingFlowParams.newBuilder();
     if (accountId != null && !accountId.isEmpty()) {
-      paramsBuilder.setAccountId(accountId);
+      paramsBuilder.setObfuscatedAccountId(accountId);
     }
-    if (oldSku != null && replaceSkusProrationMode != null) {
+    if (oldSku != null && replaceSkusProrationMode != null && oldPurchaseToken != null) {
       paramsBuilder
-        .setOldSku(oldSku)
+        .setOldSku(oldSku, oldPurchaseToken)
         .setReplaceSkusProrationMode(replaceSkusProrationMode)
         .setSkuDetails(skuDetails);
     } else {
@@ -240,7 +241,7 @@ class MethodCallHandlerImpl
   }
 
   private void consumeAsync(
-      String purchaseToken, String developerPayload, final MethodChannel.Result result) {
+      String purchaseToken, final MethodChannel.Result result) {
     if (billingClientError(result)) {
       return;
     }
@@ -254,10 +255,6 @@ class MethodCallHandlerImpl
         };
     ConsumeParams.Builder paramsBuilder =
         ConsumeParams.newBuilder().setPurchaseToken(purchaseToken);
-
-    if (developerPayload != null) {
-      paramsBuilder.setDeveloperPayload(developerPayload);
-    }
     ConsumeParams params = paramsBuilder.build();
 
     billingClient.consumeAsync(params, listener);
@@ -331,7 +328,6 @@ class MethodCallHandlerImpl
     }
     AcknowledgePurchaseParams params =
         AcknowledgePurchaseParams.newBuilder()
-            .setDeveloperPayload(developerPayload)
             .setPurchaseToken(purchaseToken)
             .build();
     billingClient.acknowledgePurchase(
